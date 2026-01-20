@@ -1,0 +1,142 @@
+.enrollment-requests-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.course-header-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-header-card h1 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.course-stats {
+  display: flex;
+  gap: 20px;
+  color: #666;
+}
+
+.course-stats span {
+  font-weight: 500;
+}
+
+.enrollment-section {
+  margin-bottom: 30px;
+}
+
+.enrollment-section h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+.enrollments-list {
+  display: grid;
+  gap: 15px;
+}
+
+.enrollment-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.enrollment-header h3 {
+  color: #333;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.enrollment-details {
+  margin-bottom: 15px;
+}
+
+.enrollment-details p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.enrollment-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.enrollment-actions button {
+  flex: 1;
+}
+
+.no-enrollments {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-enrollments p {
+  color: #666;
+  font-size: 18px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 18px;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.message.success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
