@@ -1,13 +1,11 @@
 // schema.prisma
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  // url is NOT here in Prisma 7
 }
 
 // Users table
