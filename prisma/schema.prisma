@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// schema.prisma
 
 generator client {
   provider = "prisma-client"
@@ -11,4 +7,77 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // url is NOT here in Prisma 7
+}
+
+// Users table
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  password     String
+  role         Role
+  universityId String?   @unique
+  department   String?
+  createdAt    DateTime  @default(now())
+
+  courses      Course[]   @relation("InstructorCourses")
+  enrollments  Enrollment[]
+  notifications Notification[]
+}
+
+enum Role {
+  student
+  instructor
+}
+
+// Courses table
+model Course {
+  id             String        @id @default(uuid())
+  courseCode     String        @unique
+  title          String
+  instructorId   String
+  semester       String
+  totalSeats     Int
+  availableSeats Int
+  prerequisites  String?
+  description    String?
+  createdAt      DateTime      @default(now())
+
+  instructor    User          @relation("InstructorCourses", fields: [instructorId], references: [id])
+  enrollments   Enrollment[]
+  notifications Notification[]
+}
+
+// Enrollments table
+model Enrollment {
+  id          String          @id @default(uuid())
+  studentId   String
+  courseId    String
+  status      EnrollmentStatus @default(pending)
+  submittedAt DateTime         @default(now())
+
+  student User   @relation(fields: [studentId], references: [id])
+  course  Course @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+}
+
+enum EnrollmentStatus {
+  pending
+  approved
+  rejected
+}
+
+// Notifications table
+model Notification {
+  id        String   @id @default(uuid())
+  studentId String
+  courseId  String
+  message   String
+  isRead    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  student User   @relation(fields: [studentId], references: [id])
+  course  Course @relation(fields: [courseId], references: [id])
 }
