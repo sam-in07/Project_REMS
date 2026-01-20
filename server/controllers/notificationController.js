@@ -1,6 +1,7 @@
-const mockDb = require('../services/mockDb');
+const notificationService = require('../services/notificationService');
+const courseService = require('../services/courseService');
 
-const subscribe = (req, res) => {
+const subscribe = async (req, res) => {
   try {
     const { studentId, courseId } = req.body;
 
@@ -9,17 +10,13 @@ const subscribe = (req, res) => {
     }
 
     // Verify course exists
-    const course = mockDb.getCourseById(courseId);
+    const course = await courseService.getCourseById(courseId);
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
     // Subscribe to notifications
-    const subscribed = mockDb.subscribeToCourseNotifications(studentId, courseId);
-    
-    if (!subscribed) {
-      return res.status(400).json({ error: 'Already subscribed to notifications for this course' });
-    }
+    await notificationService.subscribeToCourseNotifications(studentId, courseId);
 
     res.json({ message: 'Subscribed to notifications successfully' });
   } catch (error) {
@@ -27,24 +24,20 @@ const subscribe = (req, res) => {
   }
 };
 
-const getNotifications = (req, res) => {
+const getNotifications = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const notifications = mockDb.getNotificationsByStudent(studentId);
-    
-    // Sort by createdAt (newest first)
-    notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
+    const notifications = await notificationService.getNotificationsByStudent(studentId);
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const markAsRead = (req, res) => {
+const markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
-    const notification = mockDb.updateNotification(id, { read: true });
+    const notification = await notificationService.markAsRead(id);
     
     if (!notification) {
       return res.status(404).json({ error: 'Notification not found' });
@@ -52,6 +45,9 @@ const markAsRead = (req, res) => {
 
     res.json(notification);
   } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
     res.status(500).json({ error: error.message });
   }
 };

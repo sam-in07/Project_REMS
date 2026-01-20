@@ -1,30 +1,41 @@
-const mockDb = require('../services/mockDb');
+const courseService = require('../services/courseService');
 
-const getAllCourses = (req, res) => {
+const getAllCourses = async (req, res) => {
   try {
-    const courses = mockDb.getAllCourses();
-    res.json(courses);
+    const courses = await courseService.getAllCourses();
+    // Transform prerequisites from string to array for frontend compatibility
+    const transformedCourses = courses.map(course => ({
+      ...course,
+      prerequisites: course.prerequisites ? course.prerequisites.split(',').map(p => p.trim()) : []
+    }));
+    res.json(transformedCourses);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const getCourseById = (req, res) => {
+const getCourseById = async (req, res) => {
   try {
     const { id } = req.params;
-    const course = mockDb.getCourseById(id);
+    const course = await courseService.getCourseById(id);
     
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
-    res.json(course);
+    // Transform prerequisites from string to array for frontend compatibility
+    const transformedCourse = {
+      ...course,
+      prerequisites: course.prerequisites ? course.prerequisites.split(',').map(p => p.trim()) : []
+    };
+
+    res.json(transformedCourse);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const createCourse = (req, res) => {
+const createCourse = async (req, res) => {
   try {
     const {
       courseCode,
@@ -41,25 +52,39 @@ const createCourse = (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const course = mockDb.createCourse({
+    // Convert prerequisites array to string if needed
+    const prerequisitesStr = Array.isArray(prerequisites) 
+      ? prerequisites.join(', ') 
+      : (prerequisites || '');
+
+    const course = await courseService.createCourse({
       courseCode,
       title,
       instructorId,
-      instructorName: instructorName || '',
       semester,
       totalSeats: parseInt(totalSeats),
       availableSeats: parseInt(totalSeats),
-      prerequisites: prerequisites || [],
+      prerequisites: prerequisitesStr,
       description: description || ''
     });
 
-    res.status(201).json(course);
+    // Transform prerequisites for response
+    const transformedCourse = {
+      ...course,
+      prerequisites: course.prerequisites ? course.prerequisites.split(',').map(p => p.trim()) : []
+    };
+
+    res.status(201).json(transformedCourse);
   } catch (error) {
+    // Handle Prisma unique constraint errors
+    if (error.code === 'P2002') {
+      return res.status(400).json({ error: 'Course code already exists' });
+    }
     res.status(500).json({ error: error.message });
   }
 };
 
-const updateCourse = (req, res) => {
+const updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -68,22 +93,38 @@ const updateCourse = (req, res) => {
     if (updates.totalSeats) updates.totalSeats = parseInt(updates.totalSeats);
     if (updates.availableSeats) updates.availableSeats = parseInt(updates.availableSeats);
 
-    const course = mockDb.updateCourse(id, updates);
+    // Convert prerequisites array to string if needed
+    if (updates.prerequisites) {
+      if (Array.isArray(updates.prerequisites)) {
+        updates.prerequisites = updates.prerequisites.join(', ');
+      }
+    }
+
+    const course = await courseService.updateCourse(id, updates);
     
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
-    res.json(course);
+    // Transform prerequisites for response
+    const transformedCourse = {
+      ...course,
+      prerequisites: course.prerequisites ? course.prerequisites.split(',').map(p => p.trim()) : []
+    };
+
+    res.json(transformedCourse);
   } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Course not found' });
+    }
     res.status(500).json({ error: error.message });
   }
 };
 
-const deleteCourse = (req, res) => {
+const deleteCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const course = mockDb.deleteCourse(id);
+    const course = await courseService.deleteCourse(id);
     
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
@@ -91,15 +132,25 @@ const deleteCourse = (req, res) => {
 
     res.json({ message: 'Course deleted successfully', course });
   } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Course not found' });
+    }
     res.status(500).json({ error: error.message });
   }
 };
 
-const getCoursesByInstructor = (req, res) => {
+const getCoursesByInstructor = async (req, res) => {
   try {
     const { instructorId } = req.params;
-    const courses = mockDb.getCoursesByInstructor(instructorId);
-    res.json(courses);
+    const courses = await courseService.getCoursesByInstructor(instructorId);
+    
+    // Transform prerequisites for response
+    const transformedCourses = courses.map(course => ({
+      ...course,
+      prerequisites: course.prerequisites ? course.prerequisites.split(',').map(p => p.trim()) : []
+    }));
+
+    res.json(transformedCourses);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

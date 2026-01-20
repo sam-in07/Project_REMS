@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const mockDb = require('../services/mockDb');
+const userService = require('../services/userService');
 
 const register = async (req, res) => {
   try {
@@ -11,16 +11,16 @@ const register = async (req, res) => {
     }
 
     // Check if user exists
-    const existingUser = mockDb.findUserByEmail(email);
+    const existingUser = await userService.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Hash password (in production, use proper hashing)
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = mockDb.createUser({
+    const user = await userService.createUser({
       name,
       email,
       password: hashedPassword,
@@ -37,6 +37,10 @@ const register = async (req, res) => {
       user: userWithoutPassword
     });
   } catch (error) {
+    // Handle Prisma unique constraint errors
+    if (error.code === 'P2002') {
+      return res.status(400).json({ error: 'Email or University ID already exists' });
+    }
     res.status(500).json({ error: error.message });
   }
 };
@@ -50,13 +54,13 @@ const login = async (req, res) => {
     }
 
     // Find user
-    const user = mockDb.findUserByEmail(email);
+    const user = await userService.getUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Verify password (in production, use proper verification)
-    // For mock purposes, accept "password123" or verify hash
+    // Verify password
+    // For demo purposes, also accept "password123" for existing accounts
     const isValidPassword = password === 'password123' || 
                            await bcrypt.compare(password, user.password);
 
