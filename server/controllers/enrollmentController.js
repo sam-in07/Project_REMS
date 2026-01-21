@@ -1,5 +1,6 @@
 const Enrollment = require('../models/Enrollment');
 const Course = require('../models/Course');
+const Notification = require('../models/Notification');
 
 // Create enrollment request
 const createEnrollment = async (req, res) => {
@@ -82,13 +83,23 @@ const updateEnrollment = async (req, res) => {
     }
 
     // Handle approval logic
-    if (status === 'approved' && enrollment.status !== 'approved') {
-      if (course.availableSeats <= 0) {
-        return res.status(400).json({ error: 'No seats available' });
-      }
-      course.availableSeats -= 1;
-      await course.save();
-    }
+    // Handle approval logic
+if (status === 'approved' && enrollment.status !== 'approved') {
+  if (course.availableSeats <= 0) {
+    return res.status(400).json({ error: 'No seats available' });
+  }
+  course.availableSeats -= 1;
+  await course.save();
+
+  // ✅ Create notification for student
+  await Notification.create({
+    studentId: enrollment.studentId,
+    courseId: enrollment.courseId,
+    message: `Your enrollment for ${course.courseCode} - ${course.title} has been approved.`,
+    read: false,
+    timestamp: new Date()
+  });
+}
 
     // Handle rejection logic
     if (status === 'rejected' && enrollment.status === 'approved') {
