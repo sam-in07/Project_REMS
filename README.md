@@ -169,6 +169,27 @@ server/
 └── README.md
 
 ```
+## Backend FLow 
+```
+- Flow: Request → Route → Controller → Model → MongoDB → Response
+```
+
+## Frontendflow :
+
+🚀 Flow of the Frontend
+- Browser loads public/index.html → contains <div id="root"></div>.
+- src/index.js runs → attaches React to that root div.
+- App.js loads → defines routes and renders components (Auth, Student, Instructor, Course).
+- Components call backend APIs via services/ (e.g., authAPI, courseAPI).
+- Backend responds → React updates the UI dynamically.
+
+✅ In Short
+- index.js is the starting point of your React app.
+- It mounts your App component into the browser DOM.
+- From there, everything else (routes, components, API calls) flows through App.js.
+👉 Do you want me to show you how App.js usually looks in a MERN project (with React Router) so you can see how it connects different components like Login, Dashboard, and Courses?
+
+
 
 
 ## Database Migration

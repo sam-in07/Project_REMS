@@ -120,6 +120,8 @@ const CourseForm = ({ course, instructor, onClose, onSuccess }) => {
                 <option value="Fall 2024">Fall 2024</option>
                 <option value="Spring 2025">Spring 2025</option>
                 <option value="Summer 2025">Summer 2025</option>
+                <option value="Autumn 2025">Autumn 2025</option>
+                <option value="Summer 2025">Summer 2026</option>
               </select>
             </div>
 

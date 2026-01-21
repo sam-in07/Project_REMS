@@ -3,6 +3,7 @@ import { authAPI } from '../../services/api';
 import './Login.css';
 
 const Login = ({ onLogin }) => {
+  //State Setup
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -22,7 +23,7 @@ const Login = ({ onLogin }) => {
     });
     setError('');
   };
-
+ //Input Handling
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -172,3 +173,32 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
+
+
+
+
+/*
+
+handle submit :
+
+- Prevents default form reload.
+- Calls backend API (authAPI.login or authAPI.register).
+- On success → calls onLogin(response.data.user) which updates the parent App.js with the logged‑in user.
+- On error → shows error message.
+- Always resets loading at the end.
+
+
+
+
+
+
+
+🚀 How It Connects to Backend
+- authAPI.login() → calls POST /api/auth/login on your Express backend.
+- authAPI.register() → calls POST /api/auth/register.
+- Backend responds with { user: {...} }.
+- onLogin() saves user in App.js state + localStorage → redirects to dashboard.
+
+
+
+*/

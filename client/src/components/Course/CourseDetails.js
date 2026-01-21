@@ -4,8 +4,10 @@ import { coursesAPI, enrollmentsAPI, notificationsAPI } from '../../services/api
 import './CourseDetails.css';
 
 const CourseDetails = ({ user, onLogout }) => {
-  const { id: courseId } = useParams();
-  const navigate = useNavigate();
+  const { id: courseId } = useParams(); //useParams hook to get course ID from URL
+  const navigate = useNavigate(); //useNavigate go back to previous page
+
+  //State Variables
   const [course, setCourse] = useState(null);
   const [enrollment, setEnrollment] = useState(null);
   const [showEnrollForm, setShowEnrollForm] = useState(false);
@@ -13,8 +15,9 @@ const CourseDetails = ({ user, onLogout }) => {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   useEffect(() => {
-    fetchCourse();
-    fetchEnrollment();
+    fetchCourse(); // calls backend API to get course details.
+    fetchEnrollment(); //checks if the logged‑in student is already enrolled.
+    
   }, [courseId]);
 
   const fetchCourse = async () => {
