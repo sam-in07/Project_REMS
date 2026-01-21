@@ -120,7 +120,7 @@ const StudentDashboard = ({ user, onLogout }) => {
         ) : (
           <div className="courses-grid">
             {filteredCourses.map((course) => (
-              <CourseCard key={course.id} course={course} navigate={navigate} />
+              <CourseCard key={course._id} course={course} navigate={navigate} />
             ))}
           </div>
         )}
@@ -131,7 +131,7 @@ const StudentDashboard = ({ user, onLogout }) => {
 
 const CourseCard = ({ course, navigate }) => {
   const handleViewCourse = () => {
-    navigate(`/course/${course.id}`);
+    navigate(`/course/${course._id}`);
   };
 
   return (

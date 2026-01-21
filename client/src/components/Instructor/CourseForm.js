@@ -50,7 +50,7 @@ const CourseForm = ({ course, instructor, onClose, onSuccess }) => {
       const courseData = {
         courseCode: formData.courseCode,
         title: formData.title,
-        instructorId: instructor.id,
+        instructorId: instructor._id,
         instructorName: instructor.name,
         semester: formData.semester,
         totalSeats: parseInt(formData.totalSeats),

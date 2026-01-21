@@ -49,7 +49,7 @@ const CourseDetails = ({ user, onLogout }) => {
 
   const handleNotifyMe = async () => {
     try {
-      await notificationsAPI.subscribe(user.id, courseId);
+      await notificationsAPI.subscribe(user._id, courseId);
       setMessage({
         text: 'You will be notified when a seat becomes available',
         type: 'success'
@@ -66,9 +66,9 @@ const CourseDetails = ({ user, onLogout }) => {
     e.preventDefault();
     try {
       await enrollmentsAPI.create({
-        studentId: user.id,
-        courseId: courseId
-      });
+  studentId: user._id,
+  courseId: courseId
+});
       setMessage({
         text: 'Enrollment request submitted successfully',
         type: 'success'

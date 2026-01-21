@@ -11,13 +11,24 @@ const InstructorDashboard = ({ user, onLogout }) => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      const response = await coursesAPI.getByInstructor(user._id);
+      setCourses(response.data);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCourses();
+}, [user._id]);
 
   const fetchCourses = async () => {
     try {
-      const response = await coursesAPI.getByInstructor(user.id);
+      const response = await coursesAPI.getByInstructor(user._id);
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
