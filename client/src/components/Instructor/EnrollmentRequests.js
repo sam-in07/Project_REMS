@@ -10,7 +10,7 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
 
   useEffect(() => {
     fetchEnrollments();
-  }, [course.id]);
+  }, [course._id]);
 
   useEffect(() => {
     setCourse(initialCourse);
@@ -18,7 +18,7 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
 
   const fetchEnrollments = async () => {
     try {
-      const response = await enrollmentsAPI.getByCourse(course.id);
+      const response = await enrollmentsAPI.getByCourse(course._id);
       setEnrollments(response.data);
     } catch (error) {
       console.error('Error fetching enrollments:', error);
@@ -41,7 +41,7 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
       
       // Fetch updated course data to reflect seat changes
       try {
-        const response = await coursesAPI.getById(course.id);
+        const response = await coursesAPI.getById(course._id);
         setCourse(response.data);
       } catch (error) {
         console.error('Error fetching updated course:', error);
@@ -101,10 +101,10 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
                 <div className="enrollments-list">
                   {pendingEnrollments.map((enrollment) => (
                     <EnrollmentCard
-                      key={enrollment.id}
+                      key={enrollment._id}
                       enrollment={enrollment}
-                      onApprove={() => handleUpdateStatus(enrollment.id, 'approved')}
-                      onReject={() => handleUpdateStatus(enrollment.id, 'rejected')}
+                      onApprove={() => handleUpdateStatus(enrollment._id, 'approved')}
+                      onReject={() => handleUpdateStatus(enrollment._id, 'rejected')}
                       canApprove={course.availableSeats > 0}
                     />
                   ))}
@@ -118,7 +118,7 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
                 <div className="enrollments-list">
                   {approvedEnrollments.map((enrollment) => (
                     <EnrollmentCard
-                      key={enrollment.id}
+                      key={enrollment._id}
                       enrollment={enrollment}
                       status="approved"
                     />
@@ -133,7 +133,7 @@ const EnrollmentRequests = ({ course: initialCourse, user, onBack, onLogout }) =
                 <div className="enrollments-list">
                   {rejectedEnrollments.map((enrollment) => (
                     <EnrollmentCard
-                      key={enrollment.id}
+                      key={enrollment._id}
                       enrollment={enrollment}
                       status="rejected"
                     />
@@ -173,7 +173,9 @@ const EnrollmentCard = ({ enrollment, onApprove, onReject, canApprove, status })
         {getStatusBadge()}
       </div>
       <div className="enrollment-details">
-        <p><strong>University ID:</strong> {enrollment.studentUniversityId}</p>
+        {/* <p><strong>University ID:</strong> {enrollment.studentUniversityId}</p> */}
+        <p><strong>University ID:</strong> {enrollment.universityId}</p>
+
         <p><strong>Submitted:</strong> {new Date(enrollment.submittedAt).toLocaleString()}</p>
       </div>
       {!status && onApprove && onReject && (
