@@ -110,17 +110,17 @@ You can also create new accounts using the Sign Up form.
 ## Project Structure
 
 ```
-Project_REMS/
-├── server/
-│   ├── controllers/     # Request handlers
-│   ├── routes/          # API routes
+ routes/          # API routes
 │   ├── services/        # Database service (mockDb.js)
 │   └── index.js         # Express server
 ├── client/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Auth/        # Login/Signup
+│   │   │Project_REMS/
+├── server/
+│   ├── controllers/     # Request handlers
+│   ├──   ├── Auth/        # Login/Signup
 │   │   │   ├── Student/     # Student dashboard & components
 │   │   │   ├── Instructor/  # Instructor dashboard & components
 │   │   │   └── Course/      # Course details
