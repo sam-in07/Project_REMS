@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
-const mockDb = require('../services/mockDb');
+const User = require('../models/User');   // ✅ use Mongoose model
 
+// Register new user
 const register = async (req, res) => {
   try {
     const { name, email, password, role, universityId, department } = req.body;
@@ -11,16 +12,16 @@ const register = async (req, res) => {
     }
 
     // Check if user exists
-    const existingUser = mockDb.findUserByEmail(email);
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Hash password (in production, use proper hashing)
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = mockDb.createUser({
+    const user = new User({
       name,
       email,
       password: hashedPassword,
@@ -29,8 +30,10 @@ const register = async (req, res) => {
       department: department || ''
     });
 
+    await user.save();
+
     // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user.toObject();
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -41,6 +44,7 @@ const register = async (req, res) => {
   }
 };
 
+// Login user
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -50,22 +54,19 @@ const login = async (req, res) => {
     }
 
     // Find user
-    const user = mockDb.findUserByEmail(email);
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Verify password (in production, use proper verification)
-    // For mock purposes, accept "password123" or verify hash
-    const isValidPassword = password === 'password123' || 
-                           await bcrypt.compare(password, user.password);
-
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user.toObject();
 
     res.json({
       message: 'Login successful',

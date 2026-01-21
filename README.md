@@ -110,17 +110,17 @@ You can also create new accounts using the Sign Up form.
 ## Project Structure
 
 ```
- routes/          # API routes
+Project_REMS/
+├── server/
+│   ├── controllers/     # Request handlers
+│   ├── routes/          # API routes
 │   ├── services/        # Database service (mockDb.js)
 │   └── index.js         # Express server
 ├── client/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │Project_REMS/
-├── server/
-│   ├── controllers/     # Request handlers
-│   ├──   ├── Auth/        # Login/Signup
+│   │   │   ├── Auth/        # Login/Signup
 │   │   │   ├── Student/     # Student dashboard & components
 │   │   │   ├── Instructor/  # Instructor dashboard & components
 │   │   │   └── Course/      # Course details
@@ -130,6 +130,46 @@ You can also create new accounts using the Sign Up form.
 ├── package.json
 └── README.md
 ```
+
+```
+Project_REMS/
+server/
+├── controllers/
+│   ├── authController.js
+│   ├── courseController.js
+│   ├── enrollmentController.js
+│   └── notificationController.js
+├── routes/
+│   ├── auth.js
+│   ├── course.js
+│   ├── enrollment.js
+│   └── notification.js
+├── services/
+│   ├── db.js              # MongoDB connection
+│   └── mockDb.js          # Keep for testing if needed
+├── models/                # ✅ NEW: MongoDB schemas
+│   ├── User.js
+│   ├── Course.js
+│   ├── Enrollment.js
+│   └── Notification.js
+└── index.js               # Express server              # Express server
+├── client/
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Auth/
+│   │   │   ├── Student/
+│   │   │   ├── Instructor/
+│   │   │   └── Course/
+│   │   ├── services/
+│   │   └── App.js
+│   └── package.json
+├── package.json
+└── README.md
+
+```
+
 
 ## Database Migration
 
