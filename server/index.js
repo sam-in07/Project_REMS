@@ -1,3 +1,4 @@
+//Imports
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,6 +10,7 @@ const courseRoutes = require('./routes/courses');       // make sure file name m
 const enrollmentRoutes = require('./routes/enrollments');
 const notificationRoutes = require('./routes/notifications');
 
+//App Setup
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -16,9 +18,22 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors()); // eta frontend backend er moddhe communication er jonne lagbe / allows frontend to talk to backend
+app.use(bodyParser.json()); // eta json data parse korar jonne lagbe
+/*
+- Parses incoming requests with JSON payloads.
+- Example: when you POST /api/auth/register with { "name": "Samin" }, 
+this middleware makes sure req.body.name is available in your controller.
+
+*/
+
+app.use(bodyParser.urlencoded({ extended: true })); // eta urlencoded data parse korar jonne lagbe
+/*
+- Parses form submissions (like HTML forms).
+- Useful if you send data as application/x-www-form-urlencoded.
+
+*/
+
 
 // Routes
 app.use('/api/auth', authRoutes);
